@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ShopDao"><!-- 写对应类名全路径 -->
+		<select id="querylist" parameterType="int" resultType="Shop">
+		    select * from shop where shop_id=#{shop_id}
+		</select>
+		<select id="querybyname" parameterType="String" resultType="Good">
+		    select * from good where good_shopname=#{good_shopname}
+		</select>
+		<select id="querybyid" parameterType="int" resultMap="MessageMap">
+		    select m.message_id,m.comment,s.shop_name,u.user_name,g.good_name,g.good_imgpath
+		    from message m,shop s,good g,user u 
+		    where m.shop_id=#{shop_id} and m.shop_id=s.shop_id and m.user_id=u.user_id and m.good_id=g.good_id
+		</select>
+		<resultMap type="Message" id="MessageMap"> 
+         <id property="message_id" column="message_id"/>     
+         <result property="comment" column="comment"/>
+         <association property="shop_id" javaType="Shop">			
+			<result property="shop_name" column="shop_name"/>				
+		 </association>
+		 <association property="user_id" javaType="User">			
+			<result property="user_name" column="user_name"/>				
+		 </association>
+		 <association property="good_id" javaType="Good">			
+			<result property="good_name" column="good_name"/>	
+			<result property="good_imgpath" column="good_imgpath"/>		
+		 </association>
+      </resultMap>
+      <select id="querylistname" parameterType="String" resultType="Shop">
+		    select * from shop where shop_name=#{shop_name}
+		</select>
+	  <insert id="insertcollection">
+	        insert into user_coll (user_id,shop_id)
+	        values (#{user_id},#{shop_id.shop_id})
+	        
+	  </insert>
+	  <resultMap type="User_coll" id="User_collMap"> 
+         <id property="collect_id" column="collect_id"/>     
+         <result property="user_id" column="user_id"/>
+         <association property="shop_id" javaType="Shop">	
+            <result property="shop_id" column="shop_id"/>
+            <result property="shop_name" column="shop_name"/>			
+			<result property="shop_imgpath" column="shop_imgpath"/>				
+		 </association>
+	 </resultMap>
+	 <select id="querybyuserid" resultMap="User_collMap">
+	        select * from user_coll u,shop s where user_id=#{user_id} and u.shop_id=s.shop_id
+	 </select>
+	 <select id="querybygood_id" parameterType="int" resultMap="MessageMap">
+		    select m.message_id,m.comment,s.shop_name,u.user_name,g.good_name,g.good_imgpath
+		    from message m,shop s,good g,user u 
+		    where m.good_id=#{good_id} and m.shop_id=s.shop_id and m.user_id=u.user_id and m.good_id=g.good_id
+		</select>
+
+	
+</mapper>

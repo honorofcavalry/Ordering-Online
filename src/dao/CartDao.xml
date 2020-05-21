@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.CartDao"><!-- 写对应类名全路径 -->
+		<insert id="insertcart" parameterType="Cart">
+		    insert into cart (user_id,good_id,good_name,good_price,good_imgpath,good_shopname,good_sum,good_style)
+		    values (#{user_id.user_id},#{good_id},#{good_name},#{good_price},#{good_imgpath},#{good_shopname},#{good_sum},#{good_style})
+		</insert>
+		<select id="querycart" resultMap="CartMap">
+		    select * from cart c,user u where c.user_id=#{user_id} and c.good_style=#{good_style}
+		</select>
+		<resultMap type="Cart" id="CartMap">    
+         <result property="good_id" column="good_id"/>
+         <result property="good_name" column="good_name"/>
+         <result property="good_price" column="good_price"/>
+         <result property="good_imgpath" column="good_imgpath"/>
+         <result property="good_shopname" column="good_shopname"/>
+         <result property="good_sum" column="good_sum"/>
+         <result property="good_style" column="good_style"/>
+         <association property="user_id" javaType="User">
+            <result property="user_id" column="user_id"/>			
+			<result property="user_name" column="user_name"/>	
+			<result property="user_pwd" column="user_pwd"/>
+			<result property="user_email" column="user_email"/>
+			<result property="user_tel" column="user_tel"/>
+			<result property="user_img" column="user_img"/>
+			<result property="user_address" column="user_address"/>		
+		 </association>
+      </resultMap>
+      <select id="querygood" resultMap="CartMap">
+            select * from cart c,user u where c.user_id=#{user.user_id} and c.good_id=#{good_id} and c.good_style=#{good_style}
+      </select>
+      <update id="updatesum">
+            update cart
+            set good_sum=#{good_sum}
+            where user_id=#{user_id} and good_id=#{good_id} and good_style=#{good_style}
+      </update>
+      <update id="updatecart">
+            update cart c,user u,good g
+            set c.good_style=#{good_style}
+            where c.user_id=#{user_id} and c.good_style=#{good_style1}
+      </update>
+      <select id="queryorder">
+             select * from cart c,user u,good g 
+             where c.user_id=#{user_id} and c.good_style=#{good_style}
+      </select>
+      <insert id="insert" parameterType="Torder">
+		    insert into torder
+		    (user_id,
+		    order_time,
+		    order_status,
+		    order_remark,
+		    order_total,
+		    goods)		    
+		    values 
+		    (#{user_id},
+		    #{order_time},
+		    #{order_status},
+		    #{order_remark},
+		    #{order_total},
+		    #{goods})
+	</insert>
+	<select id="querylist" parameterType="String" resultMap="CartMap">
+	      select * from user u,cart c where c.good_shopname=#{good_shopname}
+	</select>
+    <select id="querylistfinish" resultMap="CartMap">
+	      select * from user u,cart c where c.good_shopname=#{good_shopname} and c.good_style=#{good_style} and c.user_id=u.user_id
+	</select>
+	<update id="updatenewcart">
+	        update cart 
+	        set good_style=#{good_style}
+	        where good_style=#{good_style1} and good_id=#{good_id}
+	</update>
+	
+</mapper>

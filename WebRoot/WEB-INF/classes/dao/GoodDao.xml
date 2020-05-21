@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.GoodDao"><!-- 写对应类名全路径 -->
+		<select id="querylist" parameterType="int" resultType="Good">
+		    select * from good where good_id=#{good_id}
+		</select>
+		<select id="queryall" parameterType="String" resultType="Good">
+		    select * from good where good_shopname=#{good_shopname}
+		</select>
+		<insert id="addgood" parameterType="Good">
+		    insert into good (good_id,good_name,good_sales,good_price,good_imgpath,good_shopname,good_info,good_commentnum)
+		    values (#{good_id},#{good_name},#{good_sales},#{good_price},#{good_imgpath},#{good_shopname},#{good_shopname},#{good_commentnum})
+		</insert>
+		<select id="querybyno" parameterType="String" resultMap="MessageMap">
+		    select * from message m,user u,good g,shop s where m.message_status=#{message_status} and m.good_id=g.good_id and m.user_id=u.user_id
+		</select>
+		<resultMap type="Message" id="MessageMap">    
+         <result property="message_id" column="message_id"/>
+         <result property="comment" column="comment"/>
+         <result property="message_status" column="message_status"/>
+         <result property="message_point" column="message_point"/>
+         <association property="user_id" javaType="User">
+            <result property="user_id" column="user_id"/>			
+			<result property="user_name" column="user_name"/>	
+			<result property="user_pwd" column="user_pwd"/>
+			<result property="user_email" column="user_email"/>
+			<result property="user_tel" column="user_tel"/>
+			<result property="user_img" column="user_img"/>
+			<result property="user_address" column="user_address"/>		
+		 </association>
+		 <association property="shop_id" javaType="Shop">
+            <result property="shop_id" column="shop_id"/>			
+			<result property="shop_name" column="shop_name"/>		
+		 </association>
+		  <association property="good_id" javaType="Good">
+            <result property="good_id" column="good_id"/>			
+			<result property="good_name" column="good_name"/>		
+		 </association>
+      </resultMap>
+      <select id="querybyshopname" parameterType="String" resultMap="ReplyMap">
+          select * from reply r,user u,good g,message m where r.shop_name=#{shop_name} and r.good_id=g.good_id and r.user_id=u.user_id and r.message_id=m.message_id
+      </select>
+      <resultMap type="Reply" id="ReplyMap">    
+         <result property="reply_id" column="reply_id"/>
+         <result property="reply_comment" column="reply_comment"/>
+         <result property="reply_time" column="reply_time"/>
+         <result property="shop_name" column="shop_name"/>
+         <association property="user_id" javaType="User">
+            <result property="user_id" column="user_id"/>			
+			<result property="user_name" column="user_name"/>	
+			<result property="user_pwd" column="user_pwd"/>
+			<result property="user_email" column="user_email"/>
+			<result property="user_tel" column="user_tel"/>
+			<result property="user_img" column="user_img"/>
+			<result property="user_address" column="user_address"/>		
+		 </association>
+		  <association property="good_id" javaType="Good">
+            <result property="good_id" column="good_id"/>			
+			<result property="good_name" column="good_name"/>		
+		 </association>
+		  <association property="message_id" javaType="Message">
+		   <result property="message_id" column="message_id"/>
+           <result property="comment" column="comment"/>				
+		 </association>
+		</resultMap>
+		<select id="querybystatus" parameterType="String" resultMap="MessageMap">
+		   select * from message m,user u,good g,shop s
+		   where m.message_status=#{message_status} and m.user_id=u.user_id and m.shop_id=s.shop_id and m.good_id=g.good_id
+		</select>
+		<update id="updatestatus" parameterType="String">
+		    update message
+		    set message_status=#{message_status}
+		    where message_status!=#{message_status}
+		</update>
+		<insert id="insertreply">
+		    insert into reply(reply_comment,message_id,reply_time,shop_name,good_id,user_id)
+		    values (#{reply_comment},#{message_id.message_id},#{reply_time},#{shop_name},#{good_id.good_id},#{user_id.user_id})
+		</insert>
+		<insert id="insertmessage">
+		    insert into message(shop_id,good_id,user_id,comment,message_status,message_point)
+		    values (#{shop_id.shop_id},#{good_id.good_id},#{user_id.user_id},#{comment},#{message_status},#{message_point})
+		</insert>
+		<select id="querybygood_name" parameterType="String" resultType="Good">
+		     select * from good where good_name=#{good_name}
+		</select>
+
+	
+</mapper>

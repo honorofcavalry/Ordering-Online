@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserDao"><!-- 写对应类名全路径 -->
+		<select id="login" resultMap="UserMap">
+		    select * from user u where user_tel=#{user_tel} and user_pwd=#{user_pwd}
+		</select>
+        <resultMap id="UserMap" type="User">
+			<id property="user_id" column="user_id"/>     
+			<result property="user_name" column="user_name"/>
+			<result property="user_pwd" column="user_pwd"/>
+			<result property="user_email" column="user_email"/>
+			<result property="user_tel" column="user_tel"/>
+			<result property="user_img" column="user_img"/>
+			<result property="user_address" column="user_address"/>
+		</resultMap>
+		<update id="updateuser" parameterType="User">
+		    update user u
+		    set u.user_tel=#{user_tel},u.user_name=#{user_name},u.user_address=#{user_address}
+		    where u.user_id=#{user_id}
+		</update>
+		<update id="updateusertouxiang" parameterType="User">
+		    update user u
+		    set u.user_img=#{user_img}
+		    where u.user_id=#{user_id}
+		</update>
+		<select id="queryall" resultType="Menu">
+		    select * from menu
+		</select>
+		<select id="querybyphone" parameterType="String" resultType="User">
+		    select * from user where user_tel=#{user_tel}
+		</select>
+		<insert id="insertuser" parameterType="User">
+		    insert into user(user_name,user_pwd,user_email,user_tel)
+		    value (#{user_name},#{user_pwd},#{user_email},#{user_tel})
+		</insert>
+	
+</mapper>
